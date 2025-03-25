@@ -1,6 +1,7 @@
 from ursina import *
 from utils import grid_to_world
 from score_manager import update_high_score, get_high_score
+from ui import update_score, high_score_text,score
 # 全局字典保存已放置的方块位置和颜色
 grid_positions = {}
 
