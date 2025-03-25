@@ -110,8 +110,4 @@ def check_lines():
             
             # 更新分数
             update_score(100)
-            # 检查是否有新高分并更新显示
-            if update_high_score(score):
-                high_score_text.text = f'high score: {score}'
-                print(f"新高分: {high_score_text.text}")
 

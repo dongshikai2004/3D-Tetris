@@ -1,5 +1,5 @@
 from ursina import *
-
+from score_manager import update_high_score
 # UI相关全局变量
 score = 0
 score_text = None
@@ -53,6 +53,9 @@ def update_score(points):
             score_text.scale = 1
         except:
             pass  # 忽略可能的文本更新错误
+    if update_high_score(score):
+        high_score_text.text = f'high score: {score}'
+    
 
 def setup_next_preview():
     """创建下一个方块预览面板"""
