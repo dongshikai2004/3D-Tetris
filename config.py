@@ -2,7 +2,7 @@ from ursina import *
 
 # 网格尺寸
 GRID_WIDTH = 4
-GRID_HEIGHT = 20
+GRID_HEIGHT = 25
 GRID_DEPTH = 4
 
 # 3D方块形状定义
