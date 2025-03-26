@@ -4,10 +4,55 @@ from score_manager import update_high_score
 score = 0
 score_text = None
 help_text = None
-game_over_ui = []
 orientation_indicator = None
 next_preview = None
 high_score_text = None
+def show_game_over_ui():
+
+    # 半透明背景面板
+    panel = Entity(
+        model='quad',
+        scale=(2, 2),
+        color=Color(0, 0, 0, 1),
+        position=(0, 0.3, -0.91),
+        parent=camera.ui,
+        enabled=True
+    )
+    
+    # 大号红色游戏结束文字
+    game_over_text = Text(
+        'GAME OVER',
+        position=(0, 0.15, -0.95),
+        origin=(0, 0),
+        scale=3,
+        color=color.red,
+        parent=camera.ui,
+        enabled=True
+
+    )
+    
+    # 显示最终分数
+    score_display = Text(
+        f'FINAL SCORE: {score}',
+        position=(0, -0.05, -0.95),
+        origin=(0, 0),
+        scale=2,
+        color=color.yellow,
+        parent=camera.ui,
+        enabled=True
+    )
+    # 退出提示
+    exit_hint = Text(
+        'Game will exit in 3 seconds...',
+        position=(0, -0.15, -0.95),
+        origin=(0, 0),
+        scale=1,
+        color=color.light_gray,
+        parent=camera.ui,
+        enabled=True
+
+    )
+    print('Game Over!')
 
 def create_ui():
     global score_text, help_text, high_score_text

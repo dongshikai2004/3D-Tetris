@@ -5,42 +5,30 @@ import time
 import os
 from tetromino import Tetromino
 from utils import debug_grid
-from ui import update_next_preview
+from ui import update_next_preview,show_game_over_ui
 
 # 添加全局变量以存储下一个方块形状
 next_shape_key = None
 
 def end_game_and_exit():
     """延迟退出游戏"""
-    from ui import game_over_ui
-    
-    # 确保游戏结束界面可见并保持显示
-    if 'game_over_ui' in globals() and game_over_ui:
-        # 确保游戏结束界面在最前面显示
-        for entity in game_over_ui:
-            if entity and hasattr(entity, 'enabled'):
-                entity.enabled = True
+    for entity in scene.entities:
+        entity.enabled = False
+    show_game_over_ui()
     
     print("游戏结束，正在退出...")
-    # 延长等待时间，确保玩家能看到分数
-    time.sleep(1)  # 额外等待1秒
-    
-    # 确保立即退出
-    application.quit()
-    # 备用退出方法，以防上面的方法失败
     sys.exit(0)
 
 def spawn_tetromino():
     """生成新的俄罗斯方块"""
     global next_shape_key
     
-    from config import shapes, GRID_WIDTH, GRID_DEPTH
+    from config import shapes, GRID_WIDTH, GRID_DEPTH,GRID_HEIGHT
     from game_grid import grid_positions
     
     try:
         # 首先检查生成位置是否已被占用
-        spawn_y = 15
-        if any(grid_positions.get((x, spawn_y, z)) for x in range(GRID_WIDTH) for z in range(GRID_DEPTH)):
+        if any(grid_positions.get((x, GRID_HEIGHT, z)) for x in range(GRID_WIDTH) for z in range(GRID_DEPTH)):
             print("生成位置已被占用，游戏结束！")
             
             # 游戏结束界面在Tetromino.land()中处理
@@ -50,12 +38,10 @@ def spawn_tetromino():
             return None
         
         # 如果没有预先选择的下一个形状，就随机生成一个
-        next_shape_key ='O'
         current_shape_key = next_shape_key if next_shape_key else choice(list(shapes.keys()))
         
         # 为下一个方块随机选择新形状
         next_shape_key = choice(list(shapes.keys()))
-        next_shape_key ='O'
         
         # 更新预览
         from ui import next_preview

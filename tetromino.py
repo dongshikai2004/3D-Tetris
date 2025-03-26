@@ -6,6 +6,7 @@ from utils import world_to_grid
 from config import shapes, shape_colors
 from game_grid import grid_positions, check_lines
 from settings import game_paused
+from config import GRID_HEIGHT
 
 class Tetromino(Entity):
     def __init__(self, shape_key=None):
@@ -27,8 +28,8 @@ class Tetromino(Entity):
             self.ghost_blocks.append(ghost)
             ghost.parent = self
             
-        self.position = (0, 15, 0)
-        self.fall_speed = 0.5
+        self.position = (0, GRID_HEIGHT, 0)
+        self.fall_speed = 0.4
         self.move_cooldown = 0
         self.last_fall_time = time.time()
         self.ghost_tetromino = Entity(model=None)  # 用于保存幽灵方块的父实体
@@ -242,7 +243,6 @@ class Tetromino(Entity):
         from config import GRID_WIDTH, GRID_HEIGHT, GRID_DEPTH
         from utils import world_to_grid, grid_to_world, debug_grid
         from game_logic import spawn_tetromino, end_game_and_exit
-        from ui import game_over_ui, score
         
         # 首先销毁幽灵方块，防止后续操作引用已销毁对象
         if hasattr(self, 'ghost_tetromino') and self.ghost_tetromino:
@@ -272,7 +272,7 @@ class Tetromino(Entity):
                 original_color.r * 0.7,
                 original_color.g * 0.7,
                 original_color.b * 0.7,
-                0.95  # 设置透明度为0.7
+                1  
             )
             
             # 确保在有效范围内
@@ -302,74 +302,22 @@ class Tetromino(Entity):
         check_lines()
         
         # 检查游戏结束条件 - 检查生成位置附近是否有方块
-        spawn_y = 15  # 新方块生成的Y坐标
         spawn_check_range = 3  # 检查生成点上下3格范围内
         
         # 如果生成位置附近已经有方块，或者顶部有方块，则游戏结束
         game_over_condition = any(grid_positions.get((x, y, z)) 
-                             for y in range(spawn_y - spawn_check_range, spawn_y + spawn_check_range) 
+                             for y in range(GRID_HEIGHT, GRID_HEIGHT + spawn_check_range) 
                              for x in range(GRID_WIDTH) 
                              for z in range(GRID_DEPTH))
         
-        if game_over_condition or any(grid_positions.get((x, GRID_HEIGHT-1, z)) 
+        if game_over_condition or any(grid_positions.get((x, GRID_HEIGHT, z)) 
                                    for x in range(GRID_WIDTH) 
                                    for z in range(GRID_DEPTH)):
             print("检测到游戏结束条件！")
-            
-            # 创建一个更明显的游戏结束界面
-            game_over_ui = []
-            
-            # 半透明背景面板
-            panel = Entity(
-                model='quad',
-                scale=(2, 2),
-                color=Color(0, 0, 0, 1),
-                position=(0, 0.3, -0.91),
-                parent=camera.ui
-            )
-            game_over_ui.append(panel)
-            
-            # 大号红色游戏结束文字
-            game_over_text = Text(
-                'GAME OVER',
-                position=(0, 0.15, -0.95),
-                origin=(0, 0),
-                scale=3,
-                color=color.red,
-                parent=camera.ui
-            )
-            game_over_ui.append(game_over_text)
-            
-            # 显示最终分数
-            score_display = Text(
-                f'FINAL SCORE: {score}',
-                position=(0, -0.05, -0.95),
-                origin=(0, 0),
-                scale=2,
-                color=color.yellow,
-                parent=camera.ui
-            )
-            game_over_ui.append(score_display)
-            
-            # 退出提示
-            exit_hint = Text(
-                'Game will exit in 3 seconds...',
-                position=(0, -0.15, -0.95),
-                origin=(0, 0),
-                scale=1,
-                color=color.light_gray,
-                parent=camera.ui
-            )
-            game_over_ui.append(exit_hint)
-            
-            # 禁用所有游戏更新，但保持UI显示
-            for entity in scene.entities:
-                if hasattr(entity, 'enabled') and entity not in game_over_ui:
-                    entity.enabled = False
-            
+            from ui import show_game_over_ui
+            show_game_over_ui()
             # 延迟退出，确保玩家能看到分数
-            invoke(end_game_and_exit, delay=2)
-            destroy(self)
+            invoke(application.quit, delay=3)
             return
         
         # 如果游戏没有结束，生成新方块
