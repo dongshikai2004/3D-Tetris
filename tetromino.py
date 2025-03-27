@@ -243,6 +243,7 @@ class Tetromino(Entity):
         from config import GRID_WIDTH, GRID_HEIGHT, GRID_DEPTH
         from utils import world_to_grid, grid_to_world, debug_grid
         from game_logic import spawn_tetromino, end_game_and_exit
+        from audio import play_landing_sound  # 导入落地音效函数
         
         # 首先销毁幽灵方块，防止后续操作引用已销毁对象
         if hasattr(self, 'ghost_tetromino') and self.ghost_tetromino:
@@ -251,6 +252,9 @@ class Tetromino(Entity):
             except:
                 pass
             self.ghost_tetromino = None
+        
+        # 播放落地音效
+        play_landing_sound()
         
         # 将方块固定到网格中，使用暗色且半透明的版本
         for block in self.blocks:

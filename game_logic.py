@@ -12,9 +12,14 @@ next_shape_key = None
 
 def end_game_and_exit():
     """延迟退出游戏"""
+    from audio import play_game_over_sound  # 导入游戏结束音效函数
+    
     for entity in scene.entities:
         entity.enabled = False
     show_game_over_ui()
+    
+    # 播放游戏结束音效
+    play_game_over_sound()
     
     print("游戏结束，正在退出...")
     sys.exit(0)
@@ -39,9 +44,9 @@ def spawn_tetromino():
         
         # 如果没有预先选择的下一个形状，就随机生成一个
         current_shape_key = next_shape_key if next_shape_key else choice(list(shapes.keys()))
-        
         # 为下一个方块随机选择新形状
         next_shape_key = choice(list(shapes.keys()))
+        current_shape_key='O'
         
         # 更新预览
         from ui import next_preview

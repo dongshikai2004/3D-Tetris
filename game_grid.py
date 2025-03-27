@@ -1,7 +1,6 @@
 from ursina import *
 from utils import grid_to_world
-from score_manager import update_high_score, get_high_score
-from ui import update_score, high_score_text,score
+from ui import update_score
 # 全局字典保存已放置的方块位置和颜色
 grid_positions = {}
 
@@ -29,8 +28,8 @@ def create_game_grid():
         )
 
 def check_lines():
-    global high_score_text
     from config import GRID_WIDTH, GRID_HEIGHT, GRID_DEPTH
+    from audio import play_line_clear_sound  # 导入消行音效函数
     
     lines_cleared = 0
     
@@ -39,6 +38,9 @@ def check_lines():
         # 如果一整层都被填满
         if all(grid_positions.get((x, y, z)) for x in range(GRID_WIDTH) for z in range(GRID_DEPTH)):
             lines_cleared += 1
+            
+            # 播放消行音效
+            play_line_clear_sound()
             
             # 移除该层方块
             for x in range(GRID_WIDTH):
@@ -68,8 +70,8 @@ def check_lines():
                     entity != camera and
                     not hasattr(entity, 'ui') and
                     not getattr(entity, 'is_editor_camera', False) and 
+                    not hasattr(entity,'play') and
                     entity.name!='score_text' and
-                    entity.name!='high_score_text' and
                     # 确保不是UI的子实体
                     (not hasattr(entity, 'parent') or 
                      (entity.parent != camera.ui and not hasattr(entity.parent, 'parent') or 

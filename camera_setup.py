@@ -19,61 +19,12 @@ def setup_cameras():
     editor_cam.world_position = Vec3(-1.684801, -14.967558, 1.87233)
     editor_cam.world_rotation = Vec3(-3.7760412, -15.9722394, 0)
     editor_cam.target_z = -47.12350845336914
-
-    
-    # 创建俯视图面板 - 调整大小和位置
-    top_panel = Entity(
-        parent=camera.ui,
-        model='quad',
-        color=color.black66,
-        scale=(0.35, 0.35),
-        position=(0.65, 0.3),
-        z=-0.1
-    )
-    
-    # 重新设计俯视图网格 - 让网格更精确地对应实际游戏网格
-    cell_width = 0.35 / GRID_WIDTH
-    cell_depth = 0.35 / GRID_DEPTH
-    
-    # 添加网格线 - 垂直线(X方向)
-    for i in range(1,GRID_WIDTH):
-        x_pos = -0.175 + (i * cell_width)
-        Entity(
-            parent=top_panel,
-            model='quad',
-            color=color.gray,
-            scale=(0.003, 1),
-            position=(x_pos*2.8, 0, -0.01),
-            alpha=1
-        )
-    
-    # 添加网格线 - 水平线(Z方向)
-    for i in range(1,GRID_DEPTH):
-        z_pos = -0.175 + (i * cell_depth)
-        Entity(
-            parent=top_panel,
-            model='quad',
-            color=color.gray,
-            scale=(1, 0.003),
-            position=(0, z_pos*2.8, -0.01),
-            alpha=1
-        )
-    
-
-    # 添加俯视图标题
-    top_title = Text(
-        text='Top View',
-        parent=camera.ui,
-        position=(0.65, 0.45),
-        origin=(0,0),
-        color=color.white,
-        scale=1.5
-    )
     
     # 创建缓存实体池
     active_marker_pool = []
     placed_marker_pool = []
-    
+    cell_width = 0.35 / GRID_WIDTH
+    cell_depth = 0.35 / GRID_DEPTH
     # 预创建一些标记点实体，修改为圆形更容易看清
     for i in range(20):
         marker = Entity(
@@ -127,7 +78,7 @@ def setup_cameras():
                     continue
                     
                 # 计算顶视图中的精确位置
-                x_pos = 0.65 - 0.175 + (gx + 0.5) * cell_width
+                x_pos = 0.62 - 0.175 + (gx + 0.5) * cell_width
                 z_pos = 0.3 - 0.175 + (gz + 0.5) * cell_depth
                 
                 marker.position = Vec3(x_pos, z_pos, -0.12)
@@ -163,7 +114,7 @@ def setup_cameras():
                     ))
                     
                     # 计算顶视图中的精确位置
-                    x_pos = 0.65 - 0.175 + (gx + 0.5) * cell_width
+                    x_pos = 0.62 - 0.175 + (gx + 0.5) * cell_width
                     z_pos = 0.3 - 0.175 + (gz + 0.5) * cell_depth
                     
                     marker.position = Vec3(x_pos, z_pos, -0.15)

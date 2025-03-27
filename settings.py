@@ -60,6 +60,7 @@ def setup_lighting():
 
 def reset_game():
     global grid_positions, score, score_text, help_text, invoke_sequence_pairs
+    from audio import play_game_start_sound  # 导入游戏启动音效函数
     
     # 清理现有的invoke调用
     try:
@@ -108,4 +109,8 @@ def reset_game():
     from game_logic import spawn_tetromino
     # 生成新方块
     spawn_tetromino()
+    
+    # 播放游戏启动音效
+    play_game_start_sound()
+    
     print("游戏已重置")
