@@ -3,19 +3,19 @@ from ursina import *
 import sys
 import time
 
-# 导入所有模块
-from utils import setup_encoding
-from config import *
-from block import Block, GhostBlock
-from tetromino import Tetromino
-from ui import create_ui, setup_next_preview, setup_orientation_view
-from game_grid import create_game_grid, check_lines, grid_positions
-from camera_setup import setup_cameras, reset_camera, editor_cam
-from game_logic import spawn_tetromino, process_input
-from settings import setup_lighting, toggle_pause, reset_game, game_paused
-from audio import load_sounds, play_game_start_sound  # 导入音效相关函数
-import settings  # 导入settings模块以直接访问变量
-from history_manager import close_history_ui, history_ui_active  # 导入历史记录管理函数
+# 导入所有模块 - 使用新的文件结构
+from util.utils import setup_encoding
+from config.config import *
+from core.block import Block, GhostBlock
+from core.tetromino import Tetromino
+from ui.ui import create_ui, setup_next_preview, setup_orientation_view
+from core.game_grid import create_game_grid, check_lines, grid_positions
+from ui.camera_setup import setup_cameras, reset_camera, editor_cam
+from core.game_logic import spawn_tetromino, process_input
+from config.settings import setup_lighting, toggle_pause, reset_game, game_paused
+from audio.audio import load_sounds, play_game_start_sound  # 导入音效相关函数
+import config.settings as settings  # 导入settings模块以直接访问变量
+from util.history_manager import close_history_ui, history_ui_active  # 导入历史记录管理函数
 
 # 确保支持中文字符
 setup_encoding()
@@ -28,7 +28,7 @@ window.exit_button.enabled=True
 
 # 添加窗口关闭事件处理
 def on_window_close():
-    from game_logic import save_current_game_state
+    from core.game_logic import save_current_game_state
     print("检测到窗口关闭事件，保存游戏记录...")
     save_current_game_state()
     application.quit()
@@ -68,7 +68,7 @@ def update():
 
 # 处理输入 - 增强输入处理，确保ESC键能关闭历史界面
 def input(key):
-    from history_manager import history_ui_active, close_history_ui
+    from util.history_manager import history_ui_active, close_history_ui
     
     print(f"键盘输入: {key}")
     

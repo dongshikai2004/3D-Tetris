@@ -1,6 +1,7 @@
 from ursina import *
-from score_manager import register_score_changed_callback, get_high_score, get_current_score, add_score
-from config import GRID_WIDTH, GRID_DEPTH
+from util.score_manager import register_score_changed_callback, get_high_score, get_current_score, add_score
+from config.config import GRID_WIDTH, GRID_DEPTH
+
 # UI相关全局变量
 score_text = None
 help_text = None
@@ -19,8 +20,8 @@ def score_changed_callback(current_score, high_score):
             print(f"更新分数显示时出错: {e}")
 
 def show_game_over_ui():
-    from score_manager import get_current_score
-    from history_manager import show_history_ui
+    from util.score_manager import get_current_score
+    from util.history_manager import show_history_ui
 
     # 半透明背景面板
     panel = Entity(
@@ -68,7 +69,7 @@ def show_game_over_ui():
     )
     
     # 使用lambda以保证正确调用
-    from history_manager import show_history_ui
+    from util.history_manager import show_history_ui
     history_button.on_click = lambda: show_history_ui()
     
     # 退出提示
@@ -97,9 +98,9 @@ def show_game_over_ui():
 def create_ui():
     global score_text, help_text, high_score_text
     
-    from utils import create_text
-    from score_manager import get_high_score, get_current_score, register_score_changed_callback
-    from history_manager import show_history_ui
+    from util.utils import create_text
+    from util.score_manager import get_high_score, get_current_score, register_score_changed_callback
+    from util.history_manager import show_history_ui
     
     # 创建分数显示
     current_score = get_current_score()
@@ -122,7 +123,7 @@ def create_ui():
     
     # 直接设置点击处理函数
     def open_history():
-        from history_manager import show_history_ui
+        from util.history_manager import show_history_ui
         show_history_ui()
     
     history_button.on_click = open_history
@@ -238,7 +239,7 @@ def setup_next_preview():
 
 def update_next_preview(next_shape_key, next_preview):
     """更新下一个方块预览"""
-    from config import shapes, shape_colors
+    from config.config import shapes, shape_colors
     
     if not next_shape_key:
         return

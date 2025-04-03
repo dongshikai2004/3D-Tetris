@@ -1,7 +1,7 @@
 from ursina import *
-from game_grid import grid_positions
-import tetromino
-from block import Block  # Assuming Block class is in a module named block
+from core.game_grid import grid_positions
+import core.tetromino as tetromino
+from core.block import Block  # 从模块导入Block类
 import time
 
 # 游戏状态
@@ -16,13 +16,13 @@ game_duration = 0  # 游戏持续时间
 
 def update_score(points):
     """更新游戏分数 - 已废弃，使用score_manager中的add_score"""
-    from score_manager import add_score
+    from util.score_manager import add_score
     add_score(points)
 
 def toggle_pause():
     """切换游戏暂停状态"""
     global game_paused, pause_ui
-    from tetromino import Tetromino
+    from core.tetromino import Tetromino
     
     game_paused = not game_paused
     
@@ -61,8 +61,8 @@ def setup_lighting():
 def reset_game():
     global grid_positions, invoke_sequence_pairs
     global lines_cleared, game_start_time  # 添加游戏统计变量
-    from audio import play_game_start_sound  # 导入游戏启动音效函数
-    from score_manager import reset_score
+    from audio.audio import play_game_start_sound  # 导入游戏启动音效函数
+    from util.score_manager import reset_score
     
     # 重置游戏统计
     lines_cleared = 0
@@ -104,9 +104,9 @@ def reset_game():
     pause_ui = []
     
     # 更新UI
-    from ui import create_ui
+    from ui.ui import create_ui
     create_ui()
-    from game_logic import spawn_tetromino
+    from core.game_logic import spawn_tetromino
     # 生成新方块
     spawn_tetromino()
     

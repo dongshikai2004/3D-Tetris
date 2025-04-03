@@ -6,8 +6,8 @@ def setup_cameras():
     """设置更直观的辅助视图面板，确保网格与实际游戏网格一致"""
     global editor_cam
     
-    from config import GRID_WIDTH, GRID_DEPTH
-    from tetromino import Tetromino
+    from config.config import GRID_WIDTH, GRID_DEPTH
+    from core.tetromino import Tetromino
     
     # 主相机调整，使其能同时看到地面和生成点
     camera.position = (0, 22, -105)  # 降低高度，减少距离
@@ -50,10 +50,10 @@ def setup_cameras():
     
     # 更新函数 - 修正标记点位置计算
     def update_views():
-        from settings import game_paused
-        from utils import world_to_grid
-        from game_grid import grid_positions
-        from ui import orientation_indicator
+        from config.settings import game_paused
+        from util.utils import world_to_grid
+        from core.game_grid import grid_positions
+        from ui.ui import orientation_indicator
         
         if game_paused:
             return

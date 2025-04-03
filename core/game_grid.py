@@ -1,11 +1,12 @@
 from ursina import *
-from utils import grid_to_world
-from ui import update_score
+from util.utils import grid_to_world
+from util.score_manager import add_score
+
 # 全局字典保存已放置的方块位置和颜色
 grid_positions = {}
 
 def create_game_grid():
-    from config import GRID_WIDTH, GRID_HEIGHT, GRID_DEPTH
+    from config.config import GRID_WIDTH, GRID_HEIGHT, GRID_DEPTH
     
     # 添加水平方向网格线
     for x in range(GRID_WIDTH + 1):
@@ -28,9 +29,9 @@ def create_game_grid():
         )
 
 def check_lines():
-    from config import GRID_WIDTH, GRID_HEIGHT, GRID_DEPTH
-    from audio import play_line_clear_sound  # 导入消行音效函数
-    from settings import lines_cleared  # 导入行数统计变量
+    from config.config import GRID_WIDTH, GRID_HEIGHT, GRID_DEPTH
+    from audio.audio import play_line_clear_sound  # 导入消行音效函数
+    import config.settings as settings  # 导入行数统计变量
     
     lines_cleared_this_time = 0
     
@@ -78,7 +79,7 @@ def check_lines():
                      (entity.parent != camera.ui and not hasattr(entity.parent, 'parent') or 
                       entity.parent.parent != camera.ui))):
                     
-                    from utils import world_to_grid
+                    from util.utils import world_to_grid
                     grid_pos = world_to_grid(entity.position)
                     if grid_pos[1] == y:
                         entities_to_destroy.append(entity)
@@ -106,17 +107,15 @@ def check_lines():
                        entity.parent.parent != camera.ui)))):
                     
                     # 如果位置在y以上，则下移
-                    from utils import world_to_grid
+                    from util.utils import world_to_grid
                     grid_pos = world_to_grid(entity.position)
                     if grid_pos[1] > y:
                         entity.y -= 1
             
             # 更新分数 - 每行100分
-            update_score(100)
+            add_score(100)
 
     # 更新总消除行数
-    import settings
     settings.lines_cleared += lines_cleared_this_time
     
     return lines_cleared_this_time
-

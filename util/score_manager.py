@@ -2,8 +2,8 @@ import os
 from ursina import *
 
 # 获取当前文件所在目录
-GAME_DIR = os.path.dirname(os.path.abspath(__file__))
-HIGH_SCORE_FILE = os.path.join(GAME_DIR, 'high_score.txt')
+GAME_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # 上一级目录
+HIGH_SCORE_FILE = os.path.join(GAME_DIR, 'data', 'high_score.txt')
 
 # 全局变量跟踪最高分
 _high_score = 0
@@ -28,6 +28,7 @@ def _load_high_score_from_file():
 def _save_high_score_to_file():
     """将最高分保存到文件"""
     try:
+        os.makedirs(os.path.dirname(HIGH_SCORE_FILE), exist_ok=True)  # 确保目录存在
         with open(HIGH_SCORE_FILE, 'w') as f:
             f.write(str(_high_score))
         print(f"最高分已保存: {_high_score}")

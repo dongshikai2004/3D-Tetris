@@ -4,8 +4,8 @@ import datetime
 from ursina import *
 
 # 获取当前文件所在目录
-GAME_DIR = os.path.dirname(os.path.abspath(__file__))
-HISTORY_FILE = os.path.join(GAME_DIR, 'game_history.json')
+GAME_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # 上一级目录
+HISTORY_FILE = os.path.join(GAME_DIR, 'data', 'game_history.json')
 
 # 全局变量跟踪当前是否显示历史界面
 history_ui_active = False
@@ -46,6 +46,7 @@ def save_game_history(score, lines_cleared, duration):
     
     # 保存回文件
     try:
+        os.makedirs(os.path.dirname(HISTORY_FILE), exist_ok=True)  # 确保目录存在
         with open(HISTORY_FILE, 'w', encoding='utf-8') as f:
             json.dump(history, f, ensure_ascii=False, indent=4)
         print(f"历史记录已保存 - 分数: {score}, 时间: {date_str}")

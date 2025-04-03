@@ -40,5 +40,40 @@
         "lines_cleared": 0,
         "duration": 29.789716482162476,
         "duration_format": "00:29"
+    },
+    {
+        "date": "2025-04-03 14:22:19",
+        "score": 200,
+        "lines_cleared": 2,
+        "duration": 22.587329149246216,
+        "duration_format": "00:22"
+    },
+    {
+        "date": "2025-04-03 14:22:26",
+        "score": 0,
+        "lines_cleared": 0,
+        "duration": 6.037560939788818,
+        "duration_format": "00:06"
+    },
+    {
+        "date": "2025-04-03 14:23:07",
+        "score": 100,
+        "lines_cleared": 1,
+        "duration": 11.029071569442749,
+        "duration_format": "00:11"
+    },
+    {
+        "date": "2025-04-03 14:23:22",
+        "score": 0,
+        "lines_cleared": 0,
+        "duration": 10.072699069976807,
+        "duration_format": "00:10"
+    },
+    {
+        "date": "2025-04-03 14:30:45",
+        "score": 200,
+        "lines_cleared": 2,
+        "duration": 14.450209379196167,
+        "duration_format": "00:14"
     }
 ]

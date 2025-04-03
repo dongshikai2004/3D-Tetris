@@ -3,33 +3,33 @@ from random import choice
 import sys
 import time
 import os
-from tetromino import Tetromino
-from utils import debug_grid
-from ui import update_next_preview, show_game_over_ui
-from history_manager import history_ui_active  # 导入历史界面状态
+from core.tetromino import Tetromino
+from util.utils import debug_grid
+from ui.ui import update_next_preview, show_game_over_ui
+from util.history_manager import history_ui_active  # 导入历史界面状态
 
 # 添加全局变量以存储下一个方块形状
 next_shape_key = None
 
 def save_current_game_state():
     """保存当前游戏状态到历史记录"""
-    from settings import lines_cleared, game_start_time
-    from score_manager import get_current_score
-    from history_manager import save_game_history
+    import config.settings as settings  # 导入设置
+    from util.score_manager import get_current_score
+    from util.history_manager import save_game_history
     
     # 计算游戏持续时间
-    game_duration = time.time() - game_start_time if game_start_time else 0
+    game_duration = time.time() - settings.game_start_time if settings.game_start_time else 0
     
     # 获取当前分数
     score = get_current_score()
     
     # 保存游戏历史
-    save_game_history(score, lines_cleared, game_duration)
-    print(f"已保存游戏记录 - 分数: {score}, 行数: {lines_cleared}, 时长: {game_duration:.2f}秒")
+    save_game_history(score, settings.lines_cleared, game_duration)
+    print(f"已保存游戏记录 - 分数: {score}, 行数: {settings.lines_cleared}, 时长: {game_duration:.2f}秒")
 
 def end_game_and_exit():
     """延迟退出游戏"""
-    from audio import play_game_over_sound  # 导入游戏结束音效函数
+    from audio.audio import play_game_over_sound  # 导入游戏结束音效函数
     
     # 保存游戏历史
     save_current_game_state()
@@ -48,8 +48,8 @@ def spawn_tetromino():
     """生成新的俄罗斯方块"""
     global next_shape_key
     
-    from config import shapes, GRID_WIDTH, GRID_DEPTH, GRID_HEIGHT
-    from game_grid import grid_positions
+    from config.config import shapes, GRID_WIDTH, GRID_DEPTH, GRID_HEIGHT
+    from core.game_grid import grid_positions
     
     try:
         # 首先检查生成位置是否已被占用
@@ -69,7 +69,7 @@ def spawn_tetromino():
         current_shape_key = 'O'
         
         # 更新预览
-        from ui import next_preview
+        from ui.ui import next_preview
         update_next_preview(next_shape_key, next_preview)
         
         # 生成当前方块
@@ -81,10 +81,10 @@ def spawn_tetromino():
         return None
 
 def process_input(key):
-    from settings import game_paused, toggle_pause, reset_game
-    from camera_setup import reset_camera
-    from tetromino import Tetromino
-    from history_manager import history_ui_active, close_history_ui
+    from config.settings import game_paused, toggle_pause
+    from ui.camera_setup import reset_camera
+    from core.tetromino import Tetromino
+    from util.history_manager import history_ui_active, close_history_ui
     
     # 处理历史界面的ESC键
     if key == 'escape' and history_ui_active:
@@ -179,4 +179,3 @@ def restart_program():
         print(f"重启失败: {e}")
         # 如果重启失败，尝试常规退出
         sys.exit(0)
-

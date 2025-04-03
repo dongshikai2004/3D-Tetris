@@ -8,7 +8,7 @@ def setup_encoding():
 
 # 辅助函数：世界坐标和网格坐标转换
 def world_to_grid(world_pos):
-    from config import GRID_WIDTH, GRID_DEPTH
+    from config.config import GRID_WIDTH, GRID_DEPTH
     # 使用floor而不是round，确保负值正确转换
     x = round(world_pos.x + GRID_WIDTH/2)
     y = round(world_pos.y)
@@ -16,7 +16,7 @@ def world_to_grid(world_pos):
     return (x, y, z)
     
 def grid_to_world(grid_pos):
-    from config import GRID_WIDTH, GRID_DEPTH
+    from config.config import GRID_WIDTH, GRID_DEPTH
     x, y, z = grid_pos
     # 返回网格中心点的世界坐标
     return Vec3(x - GRID_WIDTH/2, y, z - GRID_DEPTH/2)
@@ -36,8 +36,8 @@ def create_text(text, position, scale=1, color=color.white):
 # 添加调试功能
 def debug_grid():
     """在控制台显示当前网格状态"""
-    from config import GRID_WIDTH, GRID_HEIGHT, GRID_DEPTH
-    from game_grid import grid_positions
+    from config.config import GRID_WIDTH, GRID_HEIGHT, GRID_DEPTH
+    from core.game_grid import grid_positions
     
     print("\n当前网格状态:")
     for y in range(GRID_HEIGHT-1, -1, -1):

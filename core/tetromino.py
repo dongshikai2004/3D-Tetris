@@ -1,12 +1,12 @@
 from ursina import *
 import time
 from random import choice
-from block import Block, GhostBlock
-from utils import world_to_grid
-from config import shapes, shape_colors
-from game_grid import grid_positions, check_lines
-from settings import game_paused
-from config import GRID_HEIGHT
+from core.block import Block, GhostBlock
+from util.utils import world_to_grid
+from config.config import shapes, shape_colors
+from core.game_grid import grid_positions, check_lines
+from config.settings import game_paused
+from config.config import GRID_HEIGHT
 
 class Tetromino(Entity):
     def __init__(self, shape_key=None):
@@ -71,7 +71,7 @@ class Tetromino(Entity):
         return True
         
     def check_collision(self):
-        from config import GRID_WIDTH, GRID_HEIGHT, GRID_DEPTH
+        from config.config import GRID_WIDTH, GRID_HEIGHT, GRID_DEPTH
         
         # 检查与边界and已有方块的碰撞
         for block in self.blocks:
@@ -198,7 +198,7 @@ class Tetromino(Entity):
                     break
                     
                 # 防止无限循环
-                from config import GRID_HEIGHT
+                from config.config import GRID_HEIGHT
                 if drop_distance > GRID_HEIGHT * 2:
                     break
         except Exception as e:
@@ -212,7 +212,7 @@ class Tetromino(Entity):
     
     def check_ghost_collision(self):
         """检查幽灵方块是否碰撞"""
-        from config import GRID_WIDTH, GRID_DEPTH
+        from config.config import GRID_WIDTH, GRID_DEPTH
         
         if not hasattr(self, 'ghost_tetromino') or not self.ghost_tetromino:
             return False
@@ -240,10 +240,10 @@ class Tetromino(Entity):
         return False
         
     def land(self):
-        from config import GRID_WIDTH, GRID_HEIGHT, GRID_DEPTH
-        from utils import world_to_grid, grid_to_world, debug_grid
-        from game_logic import spawn_tetromino, end_game_and_exit, save_current_game_state
-        from audio import play_landing_sound  # 导入落地音效函数
+        from config.config import GRID_WIDTH, GRID_HEIGHT, GRID_DEPTH
+        from util.utils import world_to_grid, grid_to_world, debug_grid
+        from core.game_logic import spawn_tetromino, end_game_and_exit, save_current_game_state
+        from audio.audio import play_landing_sound  # 导入落地音效函数
         
         # 首先销毁幽灵方块，防止后续操作引用已销毁对象
         if hasattr(self, 'ghost_tetromino') and self.ghost_tetromino:
@@ -322,7 +322,7 @@ class Tetromino(Entity):
             # 使用通用函数保存游戏历史记录
             save_current_game_state()
             
-            from ui import show_game_over_ui
+            from ui.ui import show_game_over_ui
             show_game_over_ui()
             # 延迟退出，确保玩家能看到分数
             invoke(application.quit, delay=3)
