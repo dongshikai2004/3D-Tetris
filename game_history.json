@@ -1,0 +1,44 @@
+[
+    {
+        "date": "2025-04-03 13:48:58",
+        "score": 100,
+        "lines_cleared": 1,
+        "duration": 10.71981167793274,
+        "duration_format": "00:10"
+    },
+    {
+        "date": "2025-04-03 13:53:50",
+        "score": 200,
+        "lines_cleared": 2,
+        "duration": 17.780869483947754,
+        "duration_format": "00:17"
+    },
+    {
+        "date": "2025-04-03 13:54:23",
+        "score": 0,
+        "lines_cleared": 0,
+        "duration": 31.327117443084717,
+        "duration_format": "00:31"
+    },
+    {
+        "date": "2025-04-03 13:57:11",
+        "score": 500,
+        "lines_cleared": 5,
+        "duration": 61.26005148887634,
+        "duration_format": "01:01"
+    },
+    {
+        "date": "2025-04-03 13:57:53",
+        "score": 0,
+        "lines_cleared": 0,
+        "duration": 5.499866724014282,
+        "duration_format": "00:05"
+    },
+    {
+        "date": "2025-04-03 13:58:26",
+        "score": 0,
+        "lines_cleared": 0,
+        "duration": 29.789716482162476,
+        "duration_format": "00:29"
+    }
+]

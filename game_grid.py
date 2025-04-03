@@ -30,14 +30,15 @@ def create_game_grid():
 def check_lines():
     from config import GRID_WIDTH, GRID_HEIGHT, GRID_DEPTH
     from audio import play_line_clear_sound  # 导入消行音效函数
+    from settings import lines_cleared  # 导入行数统计变量
     
-    lines_cleared = 0
+    lines_cleared_this_time = 0
     
     # 检查每一层
     for y in range(GRID_HEIGHT):
         # 如果一整层都被填满
         if all(grid_positions.get((x, y, z)) for x in range(GRID_WIDTH) for z in range(GRID_DEPTH)):
-            lines_cleared += 1
+            lines_cleared_this_time += 1
             
             # 播放消行音效
             play_line_clear_sound()
@@ -110,6 +111,12 @@ def check_lines():
                     if grid_pos[1] > y:
                         entity.y -= 1
             
-            # 更新分数
+            # 更新分数 - 每行100分
             update_score(100)
+
+    # 更新总消除行数
+    import settings
+    settings.lines_cleared += lines_cleared_this_time
+    
+    return lines_cleared_this_time
 

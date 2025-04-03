@@ -242,7 +242,7 @@ class Tetromino(Entity):
     def land(self):
         from config import GRID_WIDTH, GRID_HEIGHT, GRID_DEPTH
         from utils import world_to_grid, grid_to_world, debug_grid
-        from game_logic import spawn_tetromino, end_game_and_exit
+        from game_logic import spawn_tetromino, end_game_and_exit, save_current_game_state
         from audio import play_landing_sound  # 导入落地音效函数
         
         # 首先销毁幽灵方块，防止后续操作引用已销毁对象
@@ -318,6 +318,10 @@ class Tetromino(Entity):
                                    for x in range(GRID_WIDTH) 
                                    for z in range(GRID_DEPTH)):
             print("检测到游戏结束条件！")
+            
+            # 使用通用函数保存游戏历史记录
+            save_current_game_state()
+            
             from ui import show_game_over_ui
             show_game_over_ui()
             # 延迟退出，确保玩家能看到分数

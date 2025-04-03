@@ -5,14 +5,34 @@ import time
 import os
 from tetromino import Tetromino
 from utils import debug_grid
-from ui import update_next_preview,show_game_over_ui
+from ui import update_next_preview, show_game_over_ui
+from history_manager import history_ui_active  # 导入历史界面状态
 
 # 添加全局变量以存储下一个方块形状
 next_shape_key = None
 
+def save_current_game_state():
+    """保存当前游戏状态到历史记录"""
+    from settings import lines_cleared, game_start_time
+    from score_manager import get_current_score
+    from history_manager import save_game_history
+    
+    # 计算游戏持续时间
+    game_duration = time.time() - game_start_time if game_start_time else 0
+    
+    # 获取当前分数
+    score = get_current_score()
+    
+    # 保存游戏历史
+    save_game_history(score, lines_cleared, game_duration)
+    print(f"已保存游戏记录 - 分数: {score}, 行数: {lines_cleared}, 时长: {game_duration:.2f}秒")
+
 def end_game_and_exit():
     """延迟退出游戏"""
     from audio import play_game_over_sound  # 导入游戏结束音效函数
+    
+    # 保存游戏历史
+    save_current_game_state()
     
     for entity in scene.entities:
         entity.enabled = False
@@ -28,7 +48,7 @@ def spawn_tetromino():
     """生成新的俄罗斯方块"""
     global next_shape_key
     
-    from config import shapes, GRID_WIDTH, GRID_DEPTH,GRID_HEIGHT
+    from config import shapes, GRID_WIDTH, GRID_DEPTH, GRID_HEIGHT
     from game_grid import grid_positions
     
     try:
@@ -46,7 +66,7 @@ def spawn_tetromino():
         current_shape_key = next_shape_key if next_shape_key else choice(list(shapes.keys()))
         # 为下一个方块随机选择新形状
         next_shape_key = choice(list(shapes.keys()))
-        current_shape_key='O'
+        current_shape_key = 'O'
         
         # 更新预览
         from ui import next_preview
@@ -64,6 +84,12 @@ def process_input(key):
     from settings import game_paused, toggle_pause, reset_game
     from camera_setup import reset_camera
     from tetromino import Tetromino
+    from history_manager import history_ui_active, close_history_ui
+    
+    # 处理历史界面的ESC键
+    if key == 'escape' and history_ui_active:
+        close_history_ui()
+        return
     
     if key == 'v':
         reset_camera()
@@ -75,6 +101,10 @@ def process_input(key):
         
     # 如果游戏已暂停，除了暂停键外不处理其他输入
     if game_paused:
+        return
+    
+    # 如果历史记录界面打开，不处理游戏控制输入
+    if history_ui_active:
         return
         
     # 获取当前控制的方块
@@ -129,6 +159,9 @@ def process_input(key):
 def restart_program():
     """完全重启整个程序，而不仅仅是重置游戏状态"""
     try:
+        # 在重启前保存当前游戏状态
+        save_current_game_state()
+        
         # 获取当前程序路径
         python = sys.executable
         script = os.path.abspath(sys.argv[0])
@@ -142,8 +175,6 @@ def restart_program():
         # 关闭当前程序
         application.quit()
         
-        
-
     except Exception as e:
         print(f"重启失败: {e}")
         # 如果重启失败，尝试常规退出

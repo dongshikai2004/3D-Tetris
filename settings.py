@@ -2,22 +2,22 @@ from ursina import *
 from game_grid import grid_positions
 import tetromino
 from block import Block  # Assuming Block class is in a module named block
+import time
 
 # 游戏状态
 game_paused = False
 pause_ui = []
 invoke_sequence_pairs = []  # 存储延迟执行的函数序列
-score = 0  # 游戏分数
+
+# 游戏统计信息
+lines_cleared = 0  # 消除的行数
+game_start_time = None  # 游戏开始时间
+game_duration = 0  # 游戏持续时间
 
 def update_score(points):
-    """更新游戏分数"""
-    global score, score_text
-    score += points
-    if 'score_text' in globals() and score_text:
-        try:
-            score_text.text = f'分数: {score}'
-        except:
-            pass
+    """更新游戏分数 - 已废弃，使用score_manager中的add_score"""
+    from score_manager import add_score
+    add_score(points)
 
 def toggle_pause():
     """切换游戏暂停状态"""
@@ -59,8 +59,17 @@ def setup_lighting():
     return main_light
 
 def reset_game():
-    global grid_positions, score, score_text, help_text, invoke_sequence_pairs
+    global grid_positions, invoke_sequence_pairs
+    global lines_cleared, game_start_time  # 添加游戏统计变量
     from audio import play_game_start_sound  # 导入游戏启动音效函数
+    from score_manager import reset_score
+    
+    # 重置游戏统计
+    lines_cleared = 0
+    game_start_time = time.time()
+    
+    # 重置分数
+    reset_score()
     
     # 清理现有的invoke调用
     try:
@@ -82,14 +91,6 @@ def reset_game():
             if entity != camera and entity != camera.ui:
                 destroy(entity)
     
-    # 重置分数
-    score = 0
-    if 'score_text' in globals() and score_text:
-        try:
-            score_text.text = f'分数: {score}'
-        except:
-            pass
-    
     # 清除所有实体，包括幽灵方块
     for entity in scene.entities:
         if (not isinstance(entity, Sky) and 
@@ -99,7 +100,6 @@ def reset_game():
     
     # 重置游戏状态
     grid_positions.clear()
-    update_score(-score)  # 重置分数为0
     game_paused = False
     pause_ui = []
     

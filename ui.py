@@ -1,21 +1,32 @@
 from ursina import *
-from score_manager import update_high_score
+from score_manager import register_score_changed_callback, get_high_score, get_current_score, add_score
 from config import GRID_WIDTH, GRID_DEPTH
 # UI相关全局变量
-score = 0
 score_text = None
-high_score = 0
 help_text = None
 orientation_indicator = None
 next_preview = None
 high_score_text = None
+
+def score_changed_callback(current_score, high_score):
+    """分数变化时的回调函数"""
+    global score_text
+    if score_text:
+        try:
+            score_text.text = f'score: {current_score}\nhigh score: {high_score}'
+            score_text.scale = 1
+        except Exception as e:
+            print(f"更新分数显示时出错: {e}")
+
 def show_game_over_ui():
+    from score_manager import get_current_score
+    from history_manager import show_history_ui
 
     # 半透明背景面板
     panel = Entity(
         model='quad',
         scale=(2, 2),
-        color=Color(0, 0, 0, 1),
+        color=Color(0, 0, 0, 0.9),  # 改为半透明
         position=(0, 0.3, -0.91),
         parent=camera.ui,
         enabled=True
@@ -30,12 +41,12 @@ def show_game_over_ui():
         color=color.red,
         parent=camera.ui,
         enabled=True
-
     )
     
     # 显示最终分数
+    final_score = get_current_score()
     score_display = Text(
-        f'FINAL SCORE: {score}',
+        f'FINAL SCORE: {final_score}',
         position=(0, -0.05, -0.95),
         origin=(0, 0),
         scale=2,
@@ -43,20 +54,38 @@ def show_game_over_ui():
         parent=camera.ui,
         enabled=True
     )
+    
+    # 添加查看历史记录按钮 - 修复颜色问题
+    history_button = Button(
+        text='查看历史记录',
+        position=(0, -0.15, -0.95),
+        origin=(0, 0),
+        scale=(0.3, 0.06),  # 更大的按钮
+        color=color.azure,
+        highlight_color=color.cyan,  # 修复：使用存在的颜色
+        pressed_color=color.blue,
+        parent=camera.ui
+    )
+    
+    # 使用lambda以保证正确调用
+    from history_manager import show_history_ui
+    history_button.on_click = lambda: show_history_ui()
+    
     # 退出提示
     exit_hint = Text(
         'Game will exit in 3 seconds...',
-        position=(0, -0.15, -0.95),
+        position=(0, -0.25, -0.95),
         origin=(0, 0),
         scale=1,
         color=color.light_gray,
         parent=camera.ui,
         enabled=True
     )
+    
     # 添加重新开始提示
     restart_hint = Text(
         'Press R to Restart',
-        position=(0, -0.25, -0.95),
+        position=(0, -0.35, -0.95),
         origin=(0, 0),
         scale=1.2,
         color=color.green,
@@ -66,15 +95,38 @@ def show_game_over_ui():
     print('Game Over!')
 
 def create_ui():
-    global score_text, help_text, high_score_text,high_score
+    global score_text, help_text, high_score_text
     
     from utils import create_text
-    from score_manager import get_high_score
+    from score_manager import get_high_score, get_current_score, register_score_changed_callback
+    from history_manager import show_history_ui
     
     # 创建分数显示
+    current_score = get_current_score()
     high_score = get_high_score()
-    score_text = create_text(f'score: {score}\nhigh score: {high_score}', position=(-0.75, 0.45),scale=1)
+    score_text = create_text(f'score: {current_score}\nhigh score: {high_score}', position=(-0.75, 0.45),scale=1)
     score_text.name = 'score_text'
+    
+    # 注册分数变化回调
+    register_score_changed_callback(score_changed_callback)
+    
+    # 添加历史记录按钮 - 修复颜色问题
+    history_button = Button(
+        text='History',
+        position=(-0.7, 0.35),
+        scale=(0.15, 0.05),  # 稍微加大按钮
+        color=color.azure,
+        highlight_color=color.cyan,  # 修复：使用存在的颜色
+        pressed_color=color.blue
+    )
+    
+    # 直接设置点击处理函数
+    def open_history():
+        from history_manager import show_history_ui
+        show_history_ui()
+    
+    history_button.on_click = open_history
+    
     # 创建俯视图面板 - 调整大小和位置
     top_panel = Entity(
         parent=camera.ui,
@@ -140,18 +192,9 @@ def create_ui():
     )
 
 def update_score(points):
-    global score, score_text,high_score
-    
-    score += points
-    if score_text:
-        try:
-            score_text.text = f'score:{score}\nhigh score: {high_score}'
-            score_text.scale = 1
-        except:
-            pass  # 忽略可能的文本更新错误
-    if update_high_score(score):
-        score_text.text = f'score: {score}\nhigh score: {high_score}'
-    
+    """更新游戏分数"""
+    add_score(points)  # 使用score_manager中的函数来更新分数
+
 def setup_next_preview():
     """创建下一个方块预览面板"""
     global next_preview

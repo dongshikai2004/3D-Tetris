@@ -5,6 +5,9 @@ GRID_WIDTH = 4
 GRID_HEIGHT = 25
 GRID_DEPTH = 4
 
+# 调试选项
+DEBUG_MODE = True  # 设置为True启用更多的调试输出
+
 # 3D方块形状定义
 shapes = {
     'T': [
