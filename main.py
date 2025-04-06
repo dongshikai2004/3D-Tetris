@@ -3,7 +3,7 @@ from ursina import *
 import sys
 import time
 
-# 导入所有模块 - 使用新的文件结构
+# 导入所有模块
 from util.utils import setup_encoding
 from config.config import *
 from core.block import Block, GhostBlock
