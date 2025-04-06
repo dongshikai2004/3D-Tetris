@@ -5,9 +5,12 @@
 
 3D版难度较大，测试样本较少无法估计适宜的加速度，暂时不考虑下落速度的增加。
 
-![游戏截图](D:\Code\Tetris\assets\image-20250403144241842.png)
+项目地址：[https://github.com/dongshikai2004/3D-Tetris](https://github.com/dongshikai2004/3D-Tetris )
+
+![游戏截图](https://github.com/dongshikai2004/3D-Tetris/blob/main/assets/image-20250403144241842.png)
 
 ## 功能特性
+
 - 3D游戏环境和方块
 - 三维空间内的方块移动和旋转
 - 多维度旋转系统（X轴、Y轴、Z轴）
