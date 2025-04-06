@@ -75,5 +75,61 @@
         "lines_cleared": 2,
         "duration": 14.450209379196167,
         "duration_format": "00:14"
+    },
+    {
+        "date": "2025-04-03 14:40:18",
+        "score": 0,
+        "lines_cleared": 0,
+        "duration": 8.896127700805664,
+        "duration_format": "00:08"
+    },
+    {
+        "date": "2025-04-03 14:43:00",
+        "score": 0,
+        "lines_cleared": 0,
+        "duration": 37.135504722595215,
+        "duration_format": "00:37"
+    },
+    {
+        "date": "2025-04-03 14:43:40",
+        "score": 0,
+        "lines_cleared": 0,
+        "duration": 21.792781591415405,
+        "duration_format": "00:21"
+    },
+    {
+        "date": "2025-04-03 14:47:28",
+        "score": 0,
+        "lines_cleared": 0,
+        "duration": 16.979808807373047,
+        "duration_format": "00:16"
+    },
+    {
+        "date": "2025-04-03 14:53:56",
+        "score": 1300,
+        "lines_cleared": 13,
+        "duration": 385.4051969051361,
+        "duration_format": "06:25"
+    },
+    {
+        "date": "2025-04-03 15:06:56",
+        "score": 0,
+        "lines_cleared": 0,
+        "duration": 212.6291058063507,
+        "duration_format": "03:32"
+    },
+    {
+        "date": "2025-04-06 22:26:39",
+        "score": 0,
+        "lines_cleared": 0,
+        "duration": 13.382317543029785,
+        "duration_format": "00:13"
+    },
+    {
+        "date": "2025-04-06 22:27:11",
+        "score": 0,
+        "lines_cleared": 0,
+        "duration": 27.27006983757019,
+        "duration_format": "00:27"
     }
 ]

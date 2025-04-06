@@ -187,7 +187,8 @@ def create_ui():
         'Alt: down\n'
         'P: Pause\n'
         'V:reset camera\n'
-        'R: replay',
+        'R: replay\n'
+        'Mouse:Perspective',
         position=(-0.75, -0.3),
         scale=0.6  # 缩小一点以容纳更多文本
     )

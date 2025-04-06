@@ -64,10 +64,21 @@ def setup_cameras():
                 if marker and hasattr(marker, 'enabled') and marker.enabled is not None:
                     marker.enabled = False
                 
-            # 已放置方块标记
-            placed_count = 0
+            # 已放置方块标记 - 修改处理逻辑，确保相同(x,z)位置只显示最上层的方块
+            # 首先创建一个字典，保存每个(x,z)位置的最高方块信息
+            top_blocks = {}
             
-            for (gx, gy, gz), block_color in list(grid_positions.items()):  # 使用list创建副本避免迭代时修改
+            # 遍历所有已放置的方块，只保留每个(x,z)位置最高的那个
+            for (gx, gy, gz), block_color in list(grid_positions.items()):
+                # 创建坐标键
+                xz_key = (gx, gz)
+                # 如果这个位置尚未记录或当前方块比已记录方块更高
+                if xz_key not in top_blocks or gy > top_blocks[xz_key][0]:
+                    top_blocks[xz_key] = (gy, block_color)
+            
+            # 现在使用top_blocks来显示标记点
+            placed_count = 0
+            for (gx, gz), (gy, block_color) in top_blocks.items():
                 if placed_count >= len(placed_marker_pool):
                     break
                     
@@ -86,7 +97,7 @@ def setup_cameras():
                 marker.enabled = True
                 placed_count += 1
                 
-            # 当前活动方块显示
+            # 当前活动方块显示 - 同样需要处理可能的重叠问题
             current_tetromino = None
             for entity in scene.entities:
                 if isinstance(entity, Tetromino) and entity.enabled:
@@ -94,16 +105,10 @@ def setup_cameras():
                     break
                     
             if current_tetromino:
-                active_count = 0
-                # 为活动方块的每个组成块添加标记
+                # 收集活动方块的位置信息，同样处理重叠
+                active_blocks = {}
                 for block in current_tetromino.blocks:
-                    if active_count >= len(active_marker_pool) or not block:
-                        break
-                        
-                    # 安全检查
-                    marker = active_marker_pool[active_count]
-                    if not marker or not hasattr(marker, 'position'):
-                        active_count += 1
+                    if not block:
                         continue
                         
                     pos = block.world_position
@@ -113,28 +118,40 @@ def setup_cameras():
                         round(pos.z * 2) / 2
                     ))
                     
+                    # 创建坐标键
+                    xz_key = (gx, gz)
+                    # 如果这个位置尚未记录或当前方块比已记录方块更高
+                    if xz_key not in active_blocks or gy > active_blocks[xz_key][0]:
+                        active_blocks[xz_key] = (gy, gx, gz)
+                
+                # 显示活动方块标记
+                active_count = 0
+                for (gx, gz), (gy, grid_x, grid_z) in active_blocks.items():
+                    if active_count >= len(active_marker_pool):
+                        break
+                        
+                    # 安全检查
+                    marker = active_marker_pool[active_count]
+                    if not marker or not hasattr(marker, 'position'):
+                        active_count += 1
+                        continue
+                    
                     # 计算顶视图中的精确位置
-                    x_pos = 0.62 - 0.175 + (gx + 0.5) * cell_width
-                    z_pos = 0.3 - 0.175 + (gz + 0.5) * cell_depth
+                    x_pos = 0.62 - 0.175 + (grid_x + 0.5) * cell_width
+                    z_pos = 0.3 - 0.175 + (grid_z + 0.5) * cell_depth
                     
                     marker.position = Vec3(x_pos, z_pos, -0.15)
                     marker.color = current_tetromino.color
                     marker.enabled = True
                     active_count += 1
             
-            current_tetromino = None
-            for entity in scene.entities:
-                if isinstance(entity, Tetromino) and entity.enabled:
-                    current_tetromino = entity
-                    break
-                
             if current_tetromino and orientation_indicator:
                 # 清除旧的指示模型
                 for child in orientation_indicator.children:
                     if hasattr(child, 'is_block') and child.is_block:
                         destroy(child)
                     
-            # 创建新的指示模型 - 使用更大的方块增强可见性
+                # 创建新的指示模型 - 使用更大的方块增强可见性
                 block_size = 0.2
                 for pos in current_tetromino.shape[0]:
                     block = Entity(
@@ -147,7 +164,7 @@ def setup_cameras():
                     )
                     block.is_block = True  # 标记为方块，以便后续删除
                 
-            # 同步旋转，保持姿态图的基本角度以增强立体感
+                # 同步旋转，保持姿态图的基本角度以增强立体感
                 base_rotation = Vec3(-5, 10, 0)  # 基础角度
                 # 只同步游戏方块的旋转变化
                 orientation_indicator.rotation = Vec3(

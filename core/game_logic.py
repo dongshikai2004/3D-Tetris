@@ -66,7 +66,6 @@ def spawn_tetromino():
         current_shape_key = next_shape_key if next_shape_key else choice(list(shapes.keys()))
         # 为下一个方块随机选择新形状
         next_shape_key = choice(list(shapes.keys()))
-        current_shape_key = 'O'
         
         # 更新预览
         from ui.ui import next_preview
